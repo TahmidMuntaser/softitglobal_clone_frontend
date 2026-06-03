@@ -1,5 +1,6 @@
 import './globals.css';
 import AnnouncementMarquee from '../components/AnnouncementMarquee';
+import CategoryNavbar from '../components/CategoryNavbar';
 import TopNavbar from '../components/TopNavbar';
 
 export const metadata = {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
       <body>
         <AnnouncementMarquee />
         <TopNavbar />
+        <CategoryNavbar />
         {children}
       </body>
     </html>
