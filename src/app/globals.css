@@ -2,10 +2,263 @@ html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-body {
-  min-height: 100vh;
-  background: #ffffff;
-  color: #111111;
+body {  
+  background: #fff;
+  color: #111;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.topbar.main-bg {
+  background: #2b975b;
+  padding: 0.35rem 0;
+}
+
+.announcement_text_color {
+  display: block;
+  color: #fff;
+  font-size: 14.5px;
+  font-weight:900;
+  padding-bottom: 10px;
+  padding-top: 0px;
+}
+
+.top_nav {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.top_nav_inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 40px;
+  padding-right: 100px;
+  gap: 1px;
+}
+
+.top_nav_left,
+.top_nav_right,
+.mobile_action_group,
+.desktop_action_group {
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  gap: 6px;
+}
+
+.navbar-brand img {
+  display: block;
+  width: 250px;
+  height: auto;
+  padding-left: 68px;
+}
+
+.navbar-toggler{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #000000;
+  position: relative;
+}
+
+.search_toggle,
+.cart_link,
+.desktop_action_group a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #000000;
+  position: relative;
+}
+
+.nav_icon {
+  width: 25px;
+  height: 25px;
+}
+
+.header_search {
+  position: relative;
+  flex: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header_search input {
+  width: 65%;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 17px;
+  outline: none;
+}
+
+.header_search input:focus {
+  border: 1px solid #5ba6f1
+}
+
+.header_search button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #ced4da;
+  background: #d86a0f;
+  color: #fff;
+  transition: background 0.25s ease, border-color 0.25s ease-in-out;
+}
+
+.header_search button:hover {
+  background: #e7d107;
+}
+
+.pulse-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  padding: 5px 16px;
+  border: 2.5px solid #2b975b;
+  border-radius: 999px;
+  font-size: 20px;
+  color: #000;
+  background: #fff;
+  box-sizing: border-box;
+  animation: orangePulse 1.5s infinite;
+}
+
+.pulse-phone span {
+  font-size: 20px;
+}
+
+.pulse-phone svg {
+  display: block;
+  stroke: currentColor;
+}
+
+.menu_sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 50;
+}
+
+.menu_sidebar a{
+  display: block;
+  width: 100%;
+  padding: 10px 0;
+  border-bottom: 1px solid #cabcbc;
+  font-weight: 600;
+  font-size: 16px;
+}
+/* 
+.menu_close {
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font-size: 28px;
+  line-height: 1;
+} */
+
+.display_sm {
+  display: none;
+}
+
+.display_lg {
+  display: flex;
+}
+
+@keyframes orangePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(43, 151, 91, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgba(43, 151, 91, 0.05);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgb(255, 255, 255);
+  }
+}
+.sidebar_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.search_toggle .nav_icon {
+  stroke: #111;
+}
+
+.search_toggle .nav_icon,
+.desktop_action_group .nav_icon,
+.mobile_action_group .nav_icon {
+  color: #000;
+}
+
+@media (max-width: 769px) {
+  .navbar-brand img {
+    width: auto;
+    max-width: 220px;
+  }
+  
+  .navbar-brand {
+    margin-left: -50px;
+  }
+
+  .header_search {
+    display: none;
+    order: 3;
+    width: 100%;
+    max-width: none;
+  }
+
+  .header_search.is-open {
+    display: flex;
+  }
+
+  .display_sm {
+    display: inline-flex;
+  }
+
+  .display_lg {
+    display: none;
+  }
+
+  .top_nav_inner {
+    flex-wrap: wrap;
+  }
+
+  .top_nav_right {
+    margin-left: auto;
+  }
 }
