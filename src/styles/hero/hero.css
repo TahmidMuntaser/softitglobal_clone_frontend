@@ -1,0 +1,20 @@
+.hero_section {
+  padding: 18px 60px;
+}
+
+.bg_image {
+  width: 100%;
+  aspect-ratio: 3/1;
+  background-image: url('/images/hero.webp');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+@media (max-width: 769px) {
+  .bg_image {
+    aspect-ratio: 2/1;
+    background-image: url('/images/hero-mobile.webp');
+  }
+}

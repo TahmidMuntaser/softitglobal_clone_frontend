@@ -1,4 +1,5 @@
 import './globals.css';
+import '../styles/hero/hero.css';
 import AnnouncementMarquee from '../components/AnnouncementMarquee';
 import CategoryNavbar from '../components/CategoryNavbar';
 import TopNavbar from '../components/TopNavbar';
