@@ -1,5 +1,6 @@
 import HeroSection from '../components/HeroSection';
 import PopularCategories from '../components/PopularCategories';
+import TopBrands from '../components/TopBrands';
 
 
 export default function HomePage() {
@@ -7,6 +8,7 @@ export default function HomePage() {
     <main>
       <HeroSection />
       <PopularCategories />
+      <TopBrands />
     </main>
   );
 }

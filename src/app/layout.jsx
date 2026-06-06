@@ -1,6 +1,7 @@
 import './globals.css';
 import '../styles/hero/hero.css';
 import '../styles/categories/categories.css';
+import '../styles/topBrands/topBrands.css';
 import AnnouncementMarquee from '../components/AnnouncementMarquee';
 import CategoryNavbar from '../components/CategoryNavbar';
 import TopNavbar from '../components/TopNavbar';
