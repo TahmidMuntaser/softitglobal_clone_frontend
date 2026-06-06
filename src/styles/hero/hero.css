@@ -13,6 +13,11 @@
 }
 
 @media (max-width: 769px) {
+  
+  .hero_section {
+    padding: 10px 10px;
+  }
+
   .bg_image {
     aspect-ratio: 2/1;
     background-image: url('/images/hero-mobile.webp');

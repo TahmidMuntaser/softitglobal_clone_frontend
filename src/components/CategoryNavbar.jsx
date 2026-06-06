@@ -17,6 +17,7 @@ function Icon({ type }) {
     >
       {type === "menu" && <path d="M4 6h16M4 12h16M4 18h16" />}
       {type === "down" && <path d="m6 9 6 6 6-6" />}
+      {type === "right" && <path d="m9 6 6 6-6 6" />}
     </svg>
   );
 }
@@ -24,13 +25,13 @@ function Icon({ type }) {
 export default function CategoryNavbar() {
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
+  const [activeParent, setActiveParent] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/categories/`
       );
-
       const data = await res.json();
       setCategories(data.results || []);
     };
@@ -38,18 +39,21 @@ export default function CategoryNavbar() {
     fetchCategories();
   }, []);
 
+  const parents = categories.filter((c) => c.parent_category === null);
 
+  const childrenOf = (parentId) =>
+    categories.filter((c) => c.parent_category === parentId);
 
   return (
     <div className="category_navbar">
       <div className="container-xl category_nav_inner">
-
-        
         <div
           className="category_button"
           onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          style={{ position: "relative" }}
+          onMouseLeave={() => {
+            setOpen(false);
+            setActiveParent(null);
+          }}
         >
           <Icon type="menu" />
           <span>BROWSE CATEGORIES</span>
@@ -57,15 +61,41 @@ export default function CategoryNavbar() {
 
           {open && (
             <div className="category_dropdown">
-              {categories.map((c) => (
-                <a
-                  key={c.id}
-                  href={`/shop/${c.slug}`}
-                  className="dropdown_item"
-                >
-                  {c.name}
-                </a>
-              ))}
+              {parents.map((c) => {
+                const children = childrenOf(c.id);
+
+                return (
+                  <div
+                    key={c.id}
+                    className="dropdown_row"
+                    onMouseEnter={() => setActiveParent(c.id)}
+                  >
+                    <a href={`/shop/${c.slug}`} className="dropdown_item">
+                      <span>{c.name}</span>
+
+                      {children.length > 0 && (
+                        <span className="arrow_icon">
+                          <Icon type="right" />
+                        </span>
+                      )}
+                    </a>
+
+                    {activeParent === c.id && children.length > 0 && (
+                      <div className="subcategory_dropdown">
+                        {children.map((sub) => (
+                          <a
+                            key={sub.id}
+                            href={`/shop/${sub.slug}`}
+                            className="dropdown_item sub_item"
+                          >
+                            {sub.name}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -77,7 +107,6 @@ export default function CategoryNavbar() {
             </a>
           ))}
         </div>
-
       </div>
     </div>
   );
