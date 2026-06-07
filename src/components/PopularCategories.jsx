@@ -17,9 +17,15 @@ export default function PopularCategories() {
 
         const data = await res.json();
 
-        const popular = (data.results || []).filter(
-          (item) => item.is_popular === true
-        );
+        const popular = (data.results || [])
+          .filter((item) => item.parent_category === null)
+          .sort((a, b) => {
+            if (b.delivered_count !== a.delivered_count) {
+              return b.delivered_count - a.delivered_count;
+            }
+            return a.name.localeCompare(b.name);
+          })
+          .slice(0, 6);
 
         setCategories(popular);
       } 
