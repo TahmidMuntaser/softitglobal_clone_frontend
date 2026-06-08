@@ -3,18 +3,20 @@
 const testImage = "/images/logo.webp";
 
 export default function ProductCard({ product, quantity = 1, onQuantityChange }) {
+  const imageSrc = product.image_url || product.image || testImage;
+
   return (
     <article className="product-card">
       
-      {/* img  */}
+      {/* img */}
       <div className="product-image-box">
-        <img src={testImage} alt={product.name} className="product-image"/>
+        <img src={imageSrc} alt={product.name} className="product-image"/>
       </div>
 
       <div className="product-card-content">
+
         <h3 className="product-name">{product.name}</h3>
         <div className="product-price">{product.price} Tk</div>
-
         <div className="product-actions">
 
           <div className="quantity-selector">
@@ -27,14 +29,14 @@ export default function ProductCard({ product, quantity = 1, onQuantityChange })
             </button>
           </div>
 
-          {/* cart btn  */}
+          {/* cart btn */}
           <button type="button" className="add-cart-button">
             কার্টে রাখুন
           </button>
 
         </div>
 
-        {/* order btn  */}
+        {/* order btn */}
         <button type="button" className="order-now-button">
           অর্ডার করুন
         </button>
