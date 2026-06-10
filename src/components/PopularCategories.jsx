@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { fetchAll } from "../lib/api";
 
 
 export default function PopularCategories() {
@@ -11,13 +12,11 @@ export default function PopularCategories() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories/`
-        );
+        const popular = await fetchAll("/api/public/categories/", {
+          publicRequest: true,
+        });
 
-        const data = await res.json();
-
-        const popular = (data.results || [])
+        const featured = popular
           .filter((item) => item.parent_category === null)
           .sort((a, b) => {
             if (b.delivered_count !== a.delivered_count) {
@@ -27,7 +26,7 @@ export default function PopularCategories() {
           })
           .slice(0, 6);
 
-        setCategories(popular);
+        setCategories(featured);
       } 
       
       catch (err) {

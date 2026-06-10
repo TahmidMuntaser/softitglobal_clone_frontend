@@ -5,9 +5,7 @@ import '../styles/topBrands/topBrands.css';
 import '../styles/productCard/productCard.css';
 import '../styles/productCategoryBlock/productCategoryBlock.css';
 import '../styles/productListing/productListing.css';
-import AnnouncementMarquee from '../components/AnnouncementMarquee';
-import CategoryNavbar from '../components/CategoryNavbar';
-import TopNavbar from '../components/TopNavbar';
+import SiteChrome from '../components/SiteChrome';
 
 export const metadata = {
   title: 'SoftITGlobal Clone Frontend',
@@ -17,10 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <AnnouncementMarquee />
-        <TopNavbar />
-        <CategoryNavbar />
-        {children}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

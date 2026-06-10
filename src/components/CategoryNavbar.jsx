@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { fetchAll } from "../lib/api";
 
 const links = ["HOME", "New Arrival", "Offers"];
 
@@ -29,11 +30,15 @@ export default function CategoryNavbar() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories/`
-      );
-      const data = await res.json();
-      setCategories(data.results || []);
+      try {
+        const list = await fetchAll("/api/public/categories/", {
+          publicRequest: true,
+        });
+        setCategories(list);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+        setCategories([]);
+      }
     };
 
     fetchCategories();

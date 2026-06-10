@@ -2,54 +2,45 @@
 
 import { useEffect, useState } from "react";
 import ProductCategoryBlock from "./ProductCategoryBlock";
+import { fetchAll } from "../lib/api";
 
 export default function ProductListingSection() {
   const [categories, setCategories] = useState([]);
   const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
-  let active = true;
+    let active = true;
 
-  async function loadProducts() {
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-      const url = `${baseUrl}/api/products/`;
+    async function loadProducts() {
+      try {
+        const allProducts = await fetchAll("/api/public/products/", {
+          publicRequest: true,
+        });
 
-      const allProducts = [];
-      let nextUrl = url;
+        if (!active) return;
 
-      while (nextUrl) {
-        const res = await fetch(nextUrl);
-        const data = await res.json();
 
-        allProducts.push(...(data.results || []));
-        nextUrl = data.next;
+        const products = Array.isArray(allProducts) ? allProducts : [];
+
+        const grouped = groupByCategory(products);
+
+        setCategories(grouped);
+        setQuantities(createQuantities(grouped));
+      } 
+      
+      catch (err) {
+        console.error("Failed to load products", err);
+        setCategories([]);
+        setQuantities({});
       }
-
-      if (!active) return;
-
-      const grouped = groupByCategory(allProducts);
-
-      setCategories(grouped);
-      setQuantities(createQuantities(grouped));
-    } 
-    
-    
-    catch (err) {
-      console.error("Failed to load products", err);
-      setCategories([]);
-      setQuantities({});
     }
 
-  }
+    loadProducts();
 
-  loadProducts();
-
-  return () => {
-    active = false;
-  };
-}, []);
-
+    return () => {
+      active = false;
+    };
+  }, []);
 
   function groupByCategory(products) {
     const map = {};
@@ -94,7 +85,7 @@ export default function ProductListingSection() {
     categories.forEach((category) => {
       category.products.forEach((product) => {
         qty[product.id] = 1;
-      });                                 
+      });
     });
 
     return qty;
