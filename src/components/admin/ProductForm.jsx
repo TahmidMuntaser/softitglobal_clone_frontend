@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, fetchAll } from '../../lib/api';
+import { slugify } from '../../lib/slug';
 
 const emptyProduct = {
   name: '',
@@ -28,12 +29,16 @@ export default function ProductForm({ initialProduct = null, productId = null })
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [slugAuto, setSlugAuto] = useState(true);
 
   useEffect(() => {
     if (initialProduct) {
+      const initialName = initialProduct.name || '';
+      const initialSlug = initialProduct.slug || '';
+
       setForm({
-        name: initialProduct.name || '',
-        slug: initialProduct.slug || '',
+        name: initialName,
+        slug: initialSlug,
         price:
           initialProduct.price === undefined || initialProduct.price === null
             ? ''
@@ -41,7 +46,12 @@ export default function ProductForm({ initialProduct = null, productId = null })
         image_url: initialProduct.image_url || '',
         category_id: resolveCategoryId(initialProduct),
       });
+
+      setSlugAuto(!initialSlug || initialSlug === slugify(initialName));
+      return;
     }
+
+    setSlugAuto(true);
   }, [initialProduct]);
 
   useEffect(() => {
@@ -56,6 +66,20 @@ export default function ProductForm({ initialProduct = null, productId = null })
 
   function handleChange(event) {
     const { name, value } = event.target;
+
+    if (name === 'name') {
+      setForm((prev) => ({
+        ...prev,
+        name: value,
+        slug: slugAuto ? slugify(value) : prev.slug,
+      }));
+      return;
+    }
+
+    if (name === 'slug') {
+      setSlugAuto(false);
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
@@ -92,7 +116,7 @@ export default function ProductForm({ initialProduct = null, productId = null })
     <form onSubmit={handleSubmit} style={styles.form}>
       <div style={styles.grid}>
         <label style={styles.label}>
-          Name
+          <span>Name <span style={{ color: 'red' }}>*</span></span>
           <input
             name="name"
             value={form.name}
@@ -103,7 +127,7 @@ export default function ProductForm({ initialProduct = null, productId = null })
         </label>
 
         <label style={styles.label}>
-          Slug
+          <span>Slug <span style={{ color: 'red' }}>*</span></span>
           <input
             name="slug"
             value={form.slug}
@@ -111,10 +135,11 @@ export default function ProductForm({ initialProduct = null, productId = null })
             style={styles.input}
             required
           />
+          {/* <span style={styles.helperText}>Auto-generated from the name, but you can edit it.</span> */}
         </label>
 
         <label style={styles.label}>
-          Price
+          <span>Price <span style={{ color: 'red' }}>*</span></span>
           <input
             name="price"
             type="number"
@@ -127,17 +152,18 @@ export default function ProductForm({ initialProduct = null, productId = null })
         </label>
 
         <label style={styles.label}>
-          Image URL
+          <span>Image URL <span style={{ color: 'red' }}>*</span></span>
           <input
             name="image_url"
             value={form.image_url}
             onChange={handleChange}
             style={styles.input}
+            required
           />
         </label>
 
         <label style={styles.label}>
-          Category
+          <span>Category <span style={{ color: 'red' }}>*</span></span>
           <select
             name="category_id"
             value={form.category_id}
@@ -224,5 +250,9 @@ const styles = {
     background: '#fff1f2',
     color: '#be123c',
     border: '1px solid #fecdd3',
+  },
+  helperText: {
+    fontSize: '12px',
+    color: '#64748b',
   },
 };

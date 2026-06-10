@@ -9,6 +9,35 @@ const REFRESH_KEY = "softit_refresh_token";
 const rawApi = axios.create({ baseURL });
 export const api = axios.create({ baseURL });
 
+function isTokenExpired(token) {
+  if (!token) return true;
+  try {
+  
+    const payload = token.split(".")[1];
+    if (!payload) return true;
+    
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = JSON.parse(atob(base64));
+    const exp = decoded.exp; 
+    if (!exp) return false; 
+    return Date.now() >= exp * 1000;
+  } 
+  
+  catch (e) {
+    return true;
+  }
+}
+
+if (isBrowser()) {
+  const storedAccess = window.localStorage.getItem(ACCESS_KEY);
+  const currentPath = window.location.pathname;
+  
+  if (currentPath !== '/login' && (!storedAccess || isTokenExpired(storedAccess))) {
+    clearTokens();
+    window.location.replace('/login');
+  }
+}
+
 function isBrowser() {
   return typeof window !== "undefined";
 }
@@ -67,6 +96,11 @@ export async function fetchAll(path, { publicRequest = false } = {}) {
 api.interceptors.request.use((config) => {
   if (isBrowser()) {
     const access = window.localStorage.getItem(ACCESS_KEY);
+    if (!access || isTokenExpired(access)) {
+      clearTokens();
+      window.location.href = "/login";
+      return config;
+    }
 
     if (access) {
       config.headers = config.headers || {};

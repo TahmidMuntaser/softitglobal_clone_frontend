@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api, fetchAll } from '../../lib/api';
+import { slugify } from '../../lib/slug';
 
 const emptyCategory = {
   name: '',
@@ -17,19 +18,28 @@ export default function CategoryForm({ initialCategory = null, categoryId = null
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [slugAuto, setSlugAuto] = useState(true);
 
   useEffect(() => {
     if (initialCategory) {
+      const initialName = initialCategory.name || '';
+      const initialSlug = initialCategory.slug || '';
+
       setForm({
-        name: initialCategory.name || '',
-        slug: initialCategory.slug || '',
+        name: initialName,
+        slug: initialSlug,
         image_url: initialCategory.image_url || '',
         parent_category:
           typeof initialCategory.parent_category === 'object'
             ? initialCategory.parent_category?.id || ''
             : initialCategory.parent_category || '',
       });
+
+      setSlugAuto(!initialSlug || initialSlug === slugify(initialName));
+      return;
     }
+
+    setSlugAuto(true);
   }, [initialCategory]);
 
   useEffect(() => {
@@ -44,6 +54,20 @@ export default function CategoryForm({ initialCategory = null, categoryId = null
 
   function handleChange(event) {
     const { name, value } = event.target;
+
+    if (name === 'name') {
+      setForm((prev) => ({
+        ...prev,
+        name: value,
+        slug: slugAuto ? slugify(value) : prev.slug,
+      }));
+      return;
+    }
+
+    if (name === 'slug') {
+      setSlugAuto(false);
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
@@ -79,7 +103,7 @@ export default function CategoryForm({ initialCategory = null, categoryId = null
     <form onSubmit={handleSubmit} style={styles.form}>
       <div style={styles.grid}>
         <label style={styles.label}>
-          Name
+          <span>Name <span style={{ color: 'red' }}>*</span></span>
           <input
             name="name"
             value={form.name}
@@ -90,7 +114,7 @@ export default function CategoryForm({ initialCategory = null, categoryId = null
         </label>
 
         <label style={styles.label}>
-          Slug
+          <span>Slug <span style={{ color: 'red' }}>*</span></span>
           <input
             name="slug"
             value={form.slug}
