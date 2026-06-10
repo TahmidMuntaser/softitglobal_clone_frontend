@@ -67,7 +67,15 @@ export function clearTokens() {
   window.localStorage.removeItem(REFRESH_KEY);
 }
 
-export function logout() {
+export async function logout() {
+  try {
+    await api.post("/api/logout/");
+  } 
+  
+  catch (e) {
+    console.error("Logout API call failed:", e);
+  }
+
   clearTokens();
   if (isBrowser()) window.location.href = "/login";
 }
