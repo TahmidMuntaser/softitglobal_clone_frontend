@@ -31,8 +31,10 @@ function isTokenExpired(token) {
 if (isBrowser()) {
   const storedAccess = window.localStorage.getItem(ACCESS_KEY);
   const currentPath = window.location.pathname;
-  
-  if (currentPath !== '/login' && (!storedAccess || isTokenExpired(storedAccess))) {
+
+  const isAdminRoute = currentPath.startsWith('/admin');
+
+  if (isAdminRoute && (!storedAccess || isTokenExpired(storedAccess))) {
     clearTokens();
     window.location.replace('/login');
   }
@@ -92,13 +94,18 @@ export async function fetchAll(path, { publicRequest = false } = {}) {
   return listItems(data);
 }
 
-/* attach token */
+
 api.interceptors.request.use((config) => {
   if (isBrowser()) {
     const access = window.localStorage.getItem(ACCESS_KEY);
     if (!access || isTokenExpired(access)) {
+      
+      const isAdminRoute = window.location.pathname.startsWith('/admin');
       clearTokens();
-      window.location.href = "/login";
+      
+      if (isAdminRoute) {
+        window.location.href = "/login";
+      }
       return config;
     }
 
@@ -126,8 +133,11 @@ api.interceptors.response.use(
     const refresh = window.localStorage.getItem(REFRESH_KEY);
 
     if (!refresh) {
+      const isAdminRoute = window.location.pathname.startsWith('/admin');
       clearTokens();
-      window.location.href = "/login";
+      if (isAdminRoute) {
+        window.location.href = "/login";
+      }
       return Promise.reject(error);
     }
 
@@ -153,8 +163,11 @@ api.interceptors.response.use(
 
       return api(originalRequest);
     } catch (e) {
+      const isAdminRoute = window.location.pathname.startsWith('/admin');
       clearTokens();
-      window.location.href = "/login";
+      if (isAdminRoute) {
+        window.location.href = "/login";
+      }
       return Promise.reject(e);
     }
   }
