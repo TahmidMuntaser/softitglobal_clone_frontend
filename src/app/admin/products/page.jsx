@@ -7,11 +7,11 @@ import { api, fetchAll } from '../../../lib/api';
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
+
       try {
         const [productList, categoryList] = await Promise.all([
           fetchAll('/api/products/'),
@@ -61,13 +61,7 @@ export default function ProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr>
-                <td style={styles.td} colSpan={5}>
-                  Loading...
-                </td>
-              </tr>
-            ) : products.length === 0 ? (
+            {products.length === 0 ? (
               <tr>
                 <td style={styles.td} colSpan={5}>
                   No products found.

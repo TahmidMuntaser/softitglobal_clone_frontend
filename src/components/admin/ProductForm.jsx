@@ -135,7 +135,6 @@ export default function ProductForm({ initialProduct = null, productId = null })
             style={styles.input}
             required
           />
-          {/* <span style={styles.helperText}>Auto-generated from the name, but you can edit it.</span> */}
         </label>
 
         <label style={styles.label}>
