@@ -14,7 +14,7 @@ export default function ProductCategoryBlock({ category, quantities, onQuantityC
           <span className="product-section-underline" />
         </div>
 
-        <a href={`/${category.slug}`} className="see-all-button">
+        <a href={`/shop/${category.slug}`} className="see-all-button">
           See All
         </a>
 
