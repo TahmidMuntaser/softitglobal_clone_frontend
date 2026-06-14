@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import CartSidebar from './CartSidebar';
 
 
 function Icon({ type }) {
@@ -37,6 +38,7 @@ function Icon({ type }) {
 export default function TopNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
 
 
   return (
@@ -86,9 +88,15 @@ export default function TopNavbar() {
                 <Icon type="user" />
               </a>
 
-              <a className="cart_link" href="/cart">
+              {/* Cart toggle button – opens the CartSidebar */}
+              <button
+                type="button"
+                className="cart_link"
+                onClick={() => setCartOpen(true)}
+                aria-label="Open cart"
+              >
                 <Icon type="bag" />
-              </a>
+              </button>
             </div>
 
             {/* desktop action */}
@@ -103,9 +111,15 @@ export default function TopNavbar() {
               <a href="/login">
                 <Icon type="user" />
               </a>
-              <a className="cart_link" href="/cart" aria-label="Cart">
+              {/* Desktop cart toggle */}
+              <button
+                type="button"
+                className="cart_link"
+                onClick={() => setCartOpen(true)}
+                aria-label="Open cart"
+              >
                 <Icon type="bag" />
-              </a>
+              </button>
             </div>
 
           </div>
@@ -129,6 +143,9 @@ export default function TopNavbar() {
 
         </div>
       )}
+
+      {/* Cart Sidebar component */}
+      <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }
