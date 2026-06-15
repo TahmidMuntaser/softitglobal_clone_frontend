@@ -6,8 +6,18 @@ const baseURL =
 const ACCESS_KEY = "softit_access_token";
 const REFRESH_KEY = "softit_refresh_token";
 
-const rawApi = axios.create({ baseURL });
+export const rawApi = axios.create({ baseURL });
 export const api = axios.create({ baseURL });
+
+export function getSessionId() {
+  if (typeof window === "undefined") return null;
+  let sid = window.localStorage.getItem("session_id");
+  if (!sid) {
+    sid = (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2);
+    window.localStorage.setItem("session_id", sid);
+  }
+  return sid;
+}
 
 function isTokenExpired(token) {
   if (!token) return true;
@@ -71,9 +81,8 @@ export async function logout() {
   try {
     await api.post("/api/logout/");
   } 
-  
   catch (e) {
-    console.error("Logout API call failed:", e);
+    console.error("Logout request failed", e);
   }
 
   clearTokens();
