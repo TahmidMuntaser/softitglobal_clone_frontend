@@ -22,6 +22,61 @@ const SearchIcon = () => (
   </svg>
 );
 
+const ChevronIcon = ({ open }) => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{
+      transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+      transition: 'transform 0.15s',
+      flexShrink: 0,
+    }}
+    aria-hidden="true"
+  >
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+const VISIBLE_PERMISSIONS = 2;
+
+function PermissionsCell({ role, expanded, onToggle }) {
+  const perms = role.permissions || [];
+
+  if (perms.length === 0) {
+    return <span style={styles.noPerms}>None</span>;
+  }
+
+  const shown = expanded ? perms : perms.slice(0, VISIBLE_PERMISSIONS);
+  const remaining = perms.length - VISIBLE_PERMISSIONS;
+
+  return (
+    <div style={styles.permWrap}>
+      {shown.map((p) => (
+        <span key={p.id ?? p.name} style={styles.permBadge}>
+          {p.name}
+        </span>
+      ))}
+
+      {remaining > 0 && (
+        <button
+          type="button"
+          onClick={() => onToggle(role.id)}
+          style={styles.permToggle}
+        >
+          {expanded ? 'Show less' : `+${remaining} more`}
+          <ChevronIcon open={expanded} />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +84,7 @@ export default function RolesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [expandedRows, setExpandedRows] = useState(new Set());
 
   useEffect(() => {
     async function load() {
@@ -48,10 +104,21 @@ export default function RolesPage() {
     setCurrentPage(1);
   }, [searchTerm, roles]);
 
+  function toggleExpand(id) {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
   async function handleDelete(id) {
     if (!window.confirm('Delete this role?')) return;
     try {
-      // The backend expects DELETE on the update endpoint
       await api.delete(`/api/roles/${id}/update/`);
       setRoles((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
@@ -119,11 +186,13 @@ export default function RolesPage() {
         <table style={styles.table}>
           <thead>
             <tr style={styles.theadRow}>
-              <th style={{ ...styles.th, width: '10%' }}>ID</th>
-              <th style={{ ...styles.th, width: '40%' }}>Role Name</th>
-              <th style={{ ...styles.th, width: '50%' }}>Actions</th>
+              <th style={{ ...styles.th, width: '8%' }}>ID</th>
+              <th style={{ ...styles.th, width: '22%' }}>Role Name</th>
+              <th style={{ ...styles.th, width: '50%' }}>Permissions</th>
+              <th style={{ ...styles.th, width: '20%' }}>Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {loading ? (
               <tr>
@@ -139,14 +208,21 @@ export default function RolesPage() {
                   <td style={styles.td}>
                     <span style={styles.slugText}>{role.id}</span>
                   </td>
+
                   <td style={styles.td}>
                     <span style={styles.productName}>{role.name}</span>
                   </td>
+
+                  <td style={styles.td}>
+                    <PermissionsCell
+                      role={role}
+                      expanded={expandedRows.has(role.id)}
+                      onToggle={toggleExpand}
+                    />
+                  </td>
+
                   <td style={styles.td}>
                     <div style={styles.actionRow}>
-                      <Link href={`/admin/roles/${role.id}`} style={styles.editButton}>
-                        Edit
-                      </Link>
                       <button
                         type="button"
                         onClick={() => handleDelete(role.id)}
@@ -176,6 +252,7 @@ export default function RolesPage() {
             >
               Prev
             </button>
+
             {Array.from({ length: totalPages }, (_, i) => i + 1)
               .filter((page) => {
                 if (totalPages <= 5) return true;
@@ -192,6 +269,7 @@ export default function RolesPage() {
                   {page}
                 </button>
               ))}
+
             <button
               type="button"
               onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
@@ -342,17 +420,6 @@ const styles = {
     gap: '8px',
     alignItems: 'center',
   },
-  editButton: {
-    padding: '5px 12px',
-    borderRadius: '8px',
-    background: '#f1f5f9',
-    color: '#0f172a',
-    fontSize: '13px',
-    fontWeight: 500,
-    textDecoration: 'none',
-    border: '0.5px solid #e2e8f0',
-    whiteSpace: 'nowrap',
-  },
   deleteButton: {
     padding: '5px 12px',
     borderRadius: '8px',
@@ -394,5 +461,42 @@ const styles = {
   pageButtonDisabled: {
     opacity: 0.4,
     cursor: 'not-allowed',
+  },
+  noPerms: {
+    fontSize: '13px',
+    color: '#9ca3af',
+    fontStyle: 'italic',
+  },
+  permWrap: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '6px',
+    alignItems: 'center',
+  },
+  permBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '3px 9px',
+    borderRadius: '999px',
+    background: '#f1f5f9',
+    border: '0.5px solid #e2e8f0',
+    color: '#334155',
+    fontSize: '12px',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+  },
+  permToggle: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '3px 9px',
+    borderRadius: '999px',
+    background: 'transparent',
+    border: '0.5px dashed #cbd5e1',
+    color: '#0f172a',
+    fontSize: '12px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    whiteSpace: 'nowrap',
   },
 };
