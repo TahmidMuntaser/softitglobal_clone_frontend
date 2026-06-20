@@ -8,7 +8,6 @@ const brands = [
   "https://www.grocery2.softitglobal.com/posadmin/images/brand/20251123104831.jpg",
   "https://www.grocery2.softitglobal.com/posadmin/images/brand/20251123030715.png",
   "https://www.grocery2.softitglobal.com/posadmin/images/brand/20251123030700.png",
-  "https://www.grocery2.softitglobal.com/posadmin/images/brand/20251123030700.png",
   "https://www.grocery2.softitglobal.com/posadmin/images/brand/20251123105237.png",
 ];
 
