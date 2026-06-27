@@ -20,7 +20,6 @@
   }
 }
 
-/* LEFT CARD (Checkout Form) */
 .checkout-form-section {
   background: #FFFFFF;
   border: 1px solid #DDD;
@@ -28,7 +27,6 @@
   padding: 24px;
 }
 
-/* Instruction header */
 .checkout-notice {
   height: 64px;
   display: flex;
@@ -49,9 +47,9 @@
   gap: 22px;
 }
 
-/* Floating label using fieldset + legend */
 .form-group {
   position: relative;
+  width: 100%;
 }
 
 .form-group fieldset {
@@ -61,49 +59,37 @@
   margin: 0;
   min-width: 0;
   height: 58px;
-  position: relative;
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-group.textarea-group fieldset {
+  height: auto;
+  min-height: 58px;
+}
+
+.form-group fieldset:focus-within {
+  border-color: #2B975B;
 }
 
 .form-group fieldset legend {
   font-size: 18px;
   font-weight: 700;
-  color: #222222;
+  color: #666666;
   padding: 0 6px;
   margin-left: 10px;
-  visibility: hidden;
   white-space: nowrap;
   font-family: 'Roboto', 'Noto Sans Bengali', sans-serif;
-}
-
-.form-group .floating-label {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  font-size: 18px;
-  font-weight: 700;
-  color: #666666;
-  pointer-events: none;
   transition: all 0.2s ease;
-  font-family: 'Roboto', 'Noto Sans Bengali', sans-serif;
 }
 
-.form-group:focus-within .floating-label,
-.form-group .floating-label.float-up {
-  top: 0;
-  transform: translateY(-50%);
-  font-size: 13px;
-  background: #FFFFFF;
-  padding: 0 4px;
-  left: 12px;
+.form-group fieldset:focus-within legend {
   color: #2B975B;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  height: 100%;
   border: none;
   outline: none;
   background: transparent;
@@ -117,29 +103,18 @@
 }
 
 .form-group input {
-  height: 56px;
-  padding-top: 8px;
+  height: 40px;
+  padding-top: 6px;
+  margin-top: -4px;
 }
 
 .form-group textarea {
-  padding-top: 24px;
+  padding-top: 18px;
+  padding-bottom: 8px;
   resize: vertical;
-  min-height: 90px;
+  min-height: 70px;
 }
 
-.form-group fieldset:focus-within {
-  border-color: #2B975B;
-}
-
-/* For textarea, adjust fieldset height */
-.form-group.textarea-group fieldset {
-  height: auto;
-  min-height: 58px;
-}
-
-/* ======================= */
-/* SHIPPING OPTIONS */
-/* ======================= */
 .form-tags {
   display: flex;
   gap: 18px;
@@ -176,9 +151,6 @@
   color: #FFFFFF;
 }
 
-
-/* SUBMIT BUTTON */
-
 .submit-btn {
   width: 100%;
   height: 56px;
@@ -210,9 +182,6 @@
   transform: translateY(1px);
 }
 
-
-/* RIGHT CARD (Cart Summary) */
-
 .cart-summary-section {
   background: #FFFFFF;
   border: 1px solid #DDD;
@@ -235,7 +204,6 @@
   padding-left: 24px;
 }
 
-/* Product Row */
 .cart-item-card {
   display: flex;
   align-items: center;
@@ -245,7 +213,6 @@
   margin-bottom: 16px;
 }
 
-/* Delete Button */
 .remove-btn {
   width: 20px;
   height: 20px;
@@ -273,7 +240,6 @@
   line-height: 1;
 }
 
-/* Product Image */
 .cart-item-image {
   width: 50px;
   height: 50px;
@@ -293,7 +259,6 @@
   object-fit: cover;
 }
 
-/* Product Info */
 .cart-item-info {
   flex: 1;
   min-width: 0;
@@ -321,7 +286,6 @@
   color: #666666;
 }
 
-/* Quantity Control */
 .quantity-controls {
   display: inline-flex;
   align-items: center;
@@ -378,7 +342,6 @@
   justify-content: center;
 }
 
-/* Price Column */
 .price-column {
   display: flex;
   flex-direction: column;
@@ -399,13 +362,11 @@
   color: #666666;
 }
 
-/* Divider */
 .cart-divider {
   border-top: 1px solid #ECECEC;
   margin: 0 0 0 0;
 }
 
-/* Summary Rows */
 .cart-summary-rows {
   display: flex;
   flex-direction: column;
@@ -443,7 +404,6 @@
   color: #222222;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .checkout-container {
     grid-template-columns: 1fr;

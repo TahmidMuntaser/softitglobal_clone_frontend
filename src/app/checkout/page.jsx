@@ -50,8 +50,6 @@ export default function CheckoutPage() {
 
   const getTotal = () => getSubtotal() + deliveryCharge;
 
-  const hasValue = (val) => val && val.length > 0;
-
   return (
     <div className="checkout-page">
       <div className="checkout-container">
@@ -76,9 +74,6 @@ export default function CheckoutPage() {
                   required
                 />
               </fieldset>
-              <span className={`floating-label${hasValue(formData.name) && formData.name.length > 0 ? ' float-up' : ''}`}>
-                আপনার নাম
-              </span>
             </div>
 
             {/* Mobile Field */}
@@ -95,9 +90,6 @@ export default function CheckoutPage() {
                   required
                 />
               </fieldset>
-              <span className={`floating-label${hasValue(formData.mobile) && formData.mobile.length > 0 ? ' float-up' : ''}`}>
-                আপনার মোবাইল নম্বর
-              </span>
             </div>
 
             {/* Address Field */}
@@ -114,9 +106,6 @@ export default function CheckoutPage() {
                   required
                 />
               </fieldset>
-              <span className={`floating-label${hasValue(formData.address) && formData.address.length > 0 ? ' float-up' : ''}`}>
-                আপনার সম্পূর্ণ ঠিকানা
-              </span>
             </div>
 
             <div className="form-tags">
