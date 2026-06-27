@@ -11,10 +11,11 @@ export default function CheckoutPage() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -49,6 +50,8 @@ export default function CheckoutPage() {
 
   const getTotal = () => getSubtotal() + deliveryCharge;
 
+  const hasValue = (val) => val && val.length > 0;
+
   return (
     <div className="checkout-page">
       <div className="checkout-container">
@@ -59,43 +62,61 @@ export default function CheckoutPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="checkout-form">
+            {/* Name Field */}
             <div className="form-group">
-              <label htmlFor="name">আপনার নাম</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="আপনার নাম লিখুন"
-                required
-              />
+              <fieldset>
+                <legend>আপনার নাম</legend>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder=""
+                  required
+                />
+              </fieldset>
+              <span className={`floating-label${hasValue(formData.name) && formData.name.length > 0 ? ' float-up' : ''}`}>
+                আপনার নাম
+              </span>
             </div>
 
+            {/* Mobile Field */}
             <div className="form-group">
-              <label htmlFor="mobile">আপনার মোবাইল নম্বর</label>
-              <input
-                type="tel"
-                id="mobile"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                placeholder="আপনার মোবাইল নম্বর লিখুন"
-                required
-              />
+              <fieldset>
+                <legend>আপনার মোবাইল নম্বর</legend>
+                <input
+                  type="tel"
+                  id="mobile"
+                  name="mobile"
+                  value={formData.mobile}
+                  onChange={handleChange}
+                  placeholder=""
+                  required
+                />
+              </fieldset>
+              <span className={`floating-label${hasValue(formData.mobile) && formData.mobile.length > 0 ? ' float-up' : ''}`}>
+                আপনার মোবাইল নম্বর
+              </span>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="address">আপনার সম্পূর্ণ ঠিকানা</label>
-              <textarea
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন"
-                rows="4"
-                required
-              />
+            {/* Address Field */}
+            <div className="form-group textarea-group">
+              <fieldset>
+                <legend>আপনার সম্পূর্ণ ঠিকানা</legend>
+                <textarea
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder=""
+                  rows="4"
+                  required
+                />
+              </fieldset>
+              <span className={`floating-label${hasValue(formData.address) && formData.address.length > 0 ? ' float-up' : ''}`}>
+                আপনার সম্পূর্ণ ঠিকানা
+              </span>
             </div>
 
             <div className="form-tags">
@@ -114,43 +135,47 @@ export default function CheckoutPage() {
           <h2 className="cart-title">Cart - 1 items</h2>
 
           <div className="cart-item-card">
-            <div className="cart-item-info">
-              <div className="cart-item-image">
-                <img src={cartItem.image} alt={cartItem.name} />
-              </div>
-              <div className="cart-item-details">
-                <p className="cart-item-code">Code: {cartItem.code}</p>
-                <p className="cart-item-name">{cartItem.name}</p>
-                <p className="cart-item-weight">{cartItem.weight}</p>
-              </div>
+            <button type="button" className="remove-btn">
+              <span className="remove-icon">×</span>
+            </button>
+            
+            <div className="cart-item-image">
+              <img src={cartItem.image} alt={cartItem.name} />
             </div>
 
-            <div className="cart-item-price-row">
-              <div className="quantity-controls">
-                <button type="button" className="qty-btn minus" onClick={decrementQuantity}>−</button>
-                <span className="qty-value">{cartItem.quantity}</span>
-                <button type="button" className="qty-btn plus" onClick={incrementQuantity}>+</button>
-              </div>
+            <div className="cart-item-info">
+              <p className="cart-item-title">{cartItem.name}</p>
+              <p className="cart-item-variant">Weight: {cartItem.weight}</p>
+            </div>
 
-              <div className="price-info">
-                <span className="item-price">{cartItem.price.toFixed(2)}</span>
+            <div className="quantity-controls">
+              <button type="button" className="qty-btn minus" onClick={decrementQuantity}>−</button>
+              <span className="qty-value">{cartItem.quantity}</span>
+              <button type="button" className="qty-btn plus" onClick={incrementQuantity}>+</button>
+            </div>
+
+            <div className="price-column">
+              <span className="item-price">৳{cartItem.price.toFixed(2)}</span>
+              {cartItem.discount > 0 && (
                 <span className="item-discount">Discount: {cartItem.discount.toFixed(2)}</span>
-              </div>
+              )}
             </div>
           </div>
 
+          <div className="cart-divider"></div>
+          
           <div className="cart-summary-rows">
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>{getSubtotal().toFixed(0)} ৳</span>
+              <span>৳{getSubtotal().toFixed(0)}</span>
             </div>
             <div className="summary-row">
               <span>Delivery Charge</span>
-              <span>{deliveryCharge} ৳</span>
+              <span>৳{deliveryCharge}</span>
             </div>
             <div className="summary-row total-row">
               <span>Total</span>
-              <span>{getTotal().toFixed(0)} ৳</span>
+              <span>৳{getTotal().toFixed(0)}</span>
             </div>
           </div>
         </div>
