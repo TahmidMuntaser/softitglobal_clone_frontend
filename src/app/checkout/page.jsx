@@ -3,6 +3,36 @@
 import { useState } from 'react';
 import '../../styles/shopPage/checkout.css';
 
+const initialCartItems = [
+  {
+    id: 1,
+    code: 'Sundarban',
+    name: 'Liquiid Gold Honey',
+    weight: '1kg',
+    price: 1300.00,
+    quantity: 1,
+    image: '/images/logo.webp'
+  },
+  {
+    id: 2,
+    code: 'Organic',
+    name: 'Pure Organic Honey',
+    weight: '500gm',
+    price: 850.00,
+    quantity: 2,
+    image: '/images/logo.webp'
+  },
+  {
+    id: 3,
+    code: 'Forest',
+    name: 'Forest Raw Honey',
+    weight: '1kg',
+    price: 1100.00,
+    quantity: 1,
+    image: '/images/logo.webp'
+  },
+];
+
 export default function CheckoutPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -23,32 +53,39 @@ export default function CheckoutPage() {
     alert('অর্ডার কনফার্ম করা হয়েছে!');
   };
 
-  const [cartItem, setCartItem] = useState({
-    code: 'Sundarban',
-    name: 'Liquiid Gold Honey',
-    weight: '1kg',
-    price: 1300.00,
-    discount: 0.00,
-    quantity: 1,
-    image: '/images/honey-placeholder.jpg'
-  });
+  const [cartItems, setCartItems] = useState(initialCartItems);
 
   const [deliveryCharge, setDeliveryCharge] = useState(100);
 
-  const incrementQuantity = () => {
-    setCartItem(prev => ({ ...prev, quantity: prev.quantity + 1 }));
+  const incrementQuantity = (id) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
   };
 
-  const decrementQuantity = () => {
-    setCartItem(prev => ({
-      ...prev,
-      quantity: prev.quantity > 1 ? prev.quantity - 1 : 1
-    }));
+  const decrementQuantity = (id) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
   };
 
-  const getSubtotal = () => cartItem.price * cartItem.quantity;
+  const removeItem = (id) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const getSubtotal = () =>
+    cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const getTotal = () => getSubtotal() + deliveryCharge;
+
+  const getTotalItems = () =>
+    cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="checkout-page">
@@ -102,7 +139,7 @@ export default function CheckoutPage() {
                   value={formData.address}
                   onChange={handleChange}
                   placeholder=""
-                  rows="4"
+                  rows="3"
                   required
                 />
               </fieldset>
@@ -121,35 +158,36 @@ export default function CheckoutPage() {
 
         {/* Right Cart Summary Section */}
         <div className="cart-summary-section">
-          <h2 className="cart-title">Cart - 1 items</h2>
+          <h2 className="cart-title">Cart - {getTotalItems()} {getTotalItems() === 1 ? 'item' : 'items'}</h2>
 
-          <div className="cart-item-card">
-            <button type="button" className="remove-btn">
-              <span className="remove-icon">×</span>
-            </button>
-            
-            <div className="cart-item-image">
-              <img src={cartItem.image} alt={cartItem.name} />
-            </div>
+          {cartItems.map((item) => (
+            <div key={item.id} className="cart-item-card">
+              <div className="cart-item-image-wrapper">
+                <div className="cart-item-image">
+                  <img src={item.image} alt={item.name} />
+                </div>
+                <button type="button" className="remove-btn" onClick={() => removeItem(item.id)}>
+                  <span className="remove-icon">×</span>
+                </button>
+              </div>
 
-            <div className="cart-item-info">
-              <p className="cart-item-title">{cartItem.name}</p>
-              <p className="cart-item-variant">Weight: {cartItem.weight}</p>
-            </div>
+              <div className="cart-item-info">
+                <p className="cart-item-title">{item.name}</p>
+                <p className="cart-item-variant">Weight: {item.weight}</p>
+                {item.code && <p className="cart-item-variant">Code: {item.code}</p>}
+              </div>
 
-            <div className="quantity-controls">
-              <button type="button" className="qty-btn minus" onClick={decrementQuantity}>−</button>
-              <span className="qty-value">{cartItem.quantity}</span>
-              <button type="button" className="qty-btn plus" onClick={incrementQuantity}>+</button>
-            </div>
+              <div className="quantity-controls">
+                <button type="button" className="qty-btn minus" onClick={() => decrementQuantity(item.id)}>−</button>
+                <span className="qty-value">{item.quantity}</span>
+                <button type="button" className="qty-btn plus" onClick={() => incrementQuantity(item.id)}>+</button>
+              </div>
 
-            <div className="price-column">
-              <span className="item-price">৳{cartItem.price.toFixed(2)}</span>
-              {cartItem.discount > 0 && (
-                <span className="item-discount">Discount: {cartItem.discount.toFixed(2)}</span>
-              )}
+              <div className="price-column">
+                <span className="item-price">৳{item.price.toFixed(2)}</span>
+              </div>
             </div>
-          </div>
+          ))}
 
           <div className="cart-divider"></div>
           
