@@ -109,8 +109,8 @@ export default function CheckoutPage() {
             </div>
 
             <div className="form-tags">
-              <button type="button" className={`tag green ${deliveryCharge === 60 ? 'active' : ''}`} onClick={() => setDeliveryCharge(60)}>চাকার মধ্যে - 60</button>
-              <button type="button" className={`tag green ${deliveryCharge === 100 ? 'active' : ''}`} onClick={() => setDeliveryCharge(100)}>চাকার বাইরে - 100</button>
+              <button type="button" className={`tag green ${deliveryCharge === 60 ? 'active' : ''}`} onClick={() => setDeliveryCharge(60)}> ঢাকার মধ্যে - 60</button>
+              <button type="button" className={`tag green ${deliveryCharge === 100 ? 'active' : ''}`} onClick={() => setDeliveryCharge(100)}> ঢাকার বাইরে - 100</button>
             </div>
 
             <button type="submit" className="submit-btn">
